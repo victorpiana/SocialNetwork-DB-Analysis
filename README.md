@@ -1,4 +1,4 @@
-# SI40 Project: Social Network Database and OLAP Analysis
+# SI40 Project: Social Network Database and OLAP Analysis (2023)
 
 > This repository contains the complete PostgreSQL database implementation and OLAP analysis for a social network platform, developed as part of the **SI40 (Database Management)** unit at the **UTBM** engineering school.
 
