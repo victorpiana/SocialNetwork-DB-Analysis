@@ -22,6 +22,30 @@ The project involved:
 
 ---
 
+## 📁 Repository Contents
+
+* **`si40versionfinale (1).sql`**: Complete database implementation including schema, procedures, triggers, and sample data
+* **`Piana_Jury_Chairi_SI40_rapport.pdf`**: Comprehensive project report (in French) with:
+  - MCD/MLD diagrams
+  - Detailed SQL query explanations
+  - OLAP analysis and Power BI dashboard
+  - Complete technical documentation
+
+---
+
+## 📄 Documentation
+
+For detailed information about the project, please refer to the **[project report](Piana_Jury_Chairi_SI40_rapport.pdf)** which includes:
+
+- Complete database modeling (MCD/MLD)
+- Step-by-step implementation guide
+- SQL query examples with screenshots
+- OLAP analysis methodology
+- Power BI dashboard design
+- Entity Relationship Diagram (ERD)
+
+---
+
 ## ⚙️ Key Technical Features (PostgreSQL)
 
 The database, implemented in PostgreSQL, includes several advanced features for data integrity, security, and automation:
@@ -32,7 +56,7 @@ The database, implemented in PostgreSQL, includes several advanced features for 
 * **User Management Procedure (`add_user`)**: Safely inserts a new user, including:
     * Validation of the `ROLE` field against permitted values (`administrateur`, `user_normal`, `spectateur`).
     * Automatic generation of `ID_UTILISATEUR` using a sequence (`utilisateur_id_seq`).
-* **Email Validation Trigger**: Ensures a valid email format before insertion or update on the `UTILISATEUR` table.
+    * Email format validation before insertion.
 * **Cursor Procedure (`process_utilisateurs`)**: Demonstrates row-by-row data processing and retrieval within PL/pgSQL.
 
 ### 2. Notification System
@@ -58,11 +82,12 @@ The project includes an Online Analytical Processing (OLAP) layer built using Po
 
 * **Schema**: A **Star Schema** with `POSTE` as the central Fact Table.
 * **Dimensions**: Key dimensions include `Utilisateur`, `Commentaire`, `Notification`, `Aime` (Like), and `Suit` (Follow).
-* **Insights**: Visualizations track key metrics like:
-    * Post Popularity (Likes vs. Comments).
-    * Engagement trends over time (Likes by Date).
-    * User activity (Posts vs. Comments).
-    * Notification Volume by Day.
+* **Key Metrics Tracked**:
+    * Post Popularity (Likes vs. Comments)
+    * Engagement trends over time (Likes by Date)
+    * User activity (Posts vs. Comments)
+    * Notification Volume by Day
+    * Average user age and demographics
 
 ---
 
@@ -71,15 +96,15 @@ The project includes an Online Analytical Processing (OLAP) layer built using Po
 ### Prerequisites
 
 * PostgreSQL 12+ installed
-* Power BI Desktop (for OLAP analysis)
+* psql command-line tool or pgAdmin 4
 * Git
 
 ### Database Setup
 
 1. **Clone the repository**:
 ```bash
-git clone https://github.com/victorpiana/SI40_Project.git
-cd SI40_Project
+git clone https://github.com/victorpiana/SocialNetwork-DB-Analysis.git
+cd SocialNetwork-DB-Analysis
 ```
 
 2. **Create the database**:
@@ -87,69 +112,77 @@ cd SI40_Project
 psql -U postgres -c "CREATE DATABASE social_network;"
 ```
 
-3. **Execute the SQL scripts**:
+3. **Execute the SQL file**:
 ```bash
-psql -U postgres -d social_network -f schema.sql
-psql -U postgres -d social_network -f procedures.sql
-psql -U postgres -d social_network -f triggers.sql
-psql -U postgres -d social_network -f sample_data.sql
+psql -U postgres -d social_network -f "si40versionfinale (1).sql"
 ```
 
-### Power BI Setup
-
-1. Open the `.pbix` file included in the `/analytics` folder.
-2. Configure the PostgreSQL connection with your database credentials.
-3. Refresh the data model to load the latest data.
-
----
-
-## 📁 Project Structure
-
-```
-SI40_Project/
-├── sql/
-│   ├── schema.sql           # Database schema definition
-│   ├── procedures.sql       # Stored procedures
-│   ├── triggers.sql         # Trigger functions
-│   └── sample_data.sql      # Sample data for testing
-├── analytics/
-│   └── social_network.pbix  # Power BI dashboard
-├── docs/
-│   ├── MCD.pdf              # Conceptual Data Model
-│   └── MLD.pdf              # Logical Data Model
-└── README.md
-```
+That's it! The database is now ready with all tables, procedures, triggers, and sample data.
 
 ---
 
 ## 🔒 Security Features
 
-* **Role-Based Access Control (RBAC)**: Three user roles with distinct permissions.
-* **Email Validation**: Ensures data quality at the database level.
-* **Audit Trail**: Complete history of all data modifications.
-* **Input Validation**: Procedures validate data before insertion.
+* **Role-Based Access Control (RBAC)**: Three user roles with distinct permissions:
+  - `administrateur`: Full access to all tables and operations
+  - `user_normal`: Standard user operations (create posts, like, comment, follow)
+  - `spectateur`: Read-only access
+* **Email Validation**: Ensures data quality at the database level through triggers
+* **Audit Trail**: Complete history of all data modifications in `HISTORIQUE_ACTIONS`
+* **Input Validation**: Procedures validate data before insertion to maintain integrity
 
 ---
 
-## 📈 Key Metrics Tracked
+## 🛠️ Available Functions and Procedures
 
-* User engagement (posts, comments, likes)
-* Follower growth over time
-* Most active users and popular content
-* Notification patterns and frequency
-* Content interaction rates
+The database includes several callable functions and procedures:
+
+```sql
+-- Add a new user with validation
+CALL add_user('John Doe', 'john@example.com', 'user_normal', 'securePassword123');
+
+-- Process and display all users (using cursor)
+SELECT * FROM process_utilisateurs();
+
+-- View recent notifications
+SELECT * FROM NOTIFICATION ORDER BY DATE_NOTIFICATION DESC;
+
+-- Check audit log
+SELECT * FROM HISTORIQUE_ACTIONS ORDER BY DATE_ACTION DESC;
+
+-- Get user statistics
+SELECT COUNT(*) as total_users FROM UTILISATEUR;
+SELECT AVG(EXTRACT(YEAR FROM AGE(DATE_NAISSANCE))) as avg_age FROM UTILISATEUR;
+```
 
 ---
 
-## 👤 Author
+## 👥 Team
 
-**Victor Piana**  
-Engineering Student – UTBM, SI40
+**Victor Piana** - Database modeling, SQL implementation  
+**Cyprien Jury** - SQL queries, procedures, triggers  
+**Hamza Chairi** - OLAP analysis, Power BI dashboard
+
+Engineering Students – UTBM, SI40 (June 2024)
+
+**Supervised by**: Mme Christine Lahoud
+
+---
+
+## 📚 Technologies Used
+
+| Category | Technology | Usage |
+|----------|-----------|--------|
+| Database | PostgreSQL | Core database management system |
+| Modeling | WinDesign | MCD/MLD diagram creation |
+| Administration | pgAdmin 4 | Database administration and testing |
+| Analytics | Power BI | OLAP analysis and visualization |
+| Language | PL/pgSQL | Stored procedures and triggers |
 
 ---
 
 ## 📄 License
 
-This project is part of an academic curriculum and is provided for educational purposes.
+This project is part of an academic curriculum at UTBM and is provided for educational purposes.
 
 ---
